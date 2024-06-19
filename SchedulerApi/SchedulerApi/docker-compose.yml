@@ -12,13 +12,13 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ../sql-migrations:/docker-entrypoint-initdb.d
+      - ./sql-migrations:/docker-entrypoint-initdb.d # AK TODO maybe it should contain two dots for context
 
   schedulerApi-api:
     profiles: [all]
     container_name: schedulerApi-api
     build:
-        context: ..
+        context: . # AK TODO maybe it should contain two dots for context
         dockerfile: SchedulerApi/Dockerfile
     ports:
       - 80:3000 # AK TODO change to needed for 
