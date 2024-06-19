@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  db:
+    profiles: [infra, all]
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: coding-challenge
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword123!
+    ports:
+      - 5432:5432
+    volumes:
+      - ../sql-migrations:/docker-entrypoint-initdb.d
+
+  schedulerApi-api:
+    profiles: [all]
+    container_name: schedulerApi-api
+    build:
+        context: ..
+        dockerfile: SchedulerApi/Dockerfile
+    ports:
+      - 80:80 # AK TODO change to needed for 
