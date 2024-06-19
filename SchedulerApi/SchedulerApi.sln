@@ -5,6 +5,11 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerApi", "SchedulerApi\SchedulerApi.csproj", "{885C0584-B16A-4580-AAD1-EB0E2550693B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql-migrations", "sql-migrations", "{C4A659FA-BC65-449C-AE0E-DA251A021ADB}"
+	ProjectSection(SolutionItems) = preProject
+		sql-migrations\test.sql = sql-migrations\test.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
