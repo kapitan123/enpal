@@ -4,7 +4,7 @@ namespace SchedulerApi.Controllers;
 
 public class GetAvailableManagersRequest
 {
-	public DateTime Date { get; set; }
+	public DateOnly Date { get; set; }
 
 	[JsonPropertyName("products")]
 	public string[] Products { get; set; }

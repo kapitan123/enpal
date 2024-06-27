@@ -4,7 +4,6 @@ namespace SchedulerApi.Domain;
 
 public class AvalableBookingsService(IReadScheduleRepository repo) : IAvalableBookingsService
 {
-	// AK TODO decouple
 	public async Task<IEnumerable<AvailableSlotWithManagerCount>> GetAvailableSlotsWithManagerCountAsync(Language language, Rating rating, Product[] products, DateOnly date)
 	{
 		var accessableRatings = GetSearchableRatings(rating);
@@ -13,6 +12,7 @@ public class AvalableBookingsService(IReadScheduleRepository repo) : IAvalableBo
 		return result;
 	}
 
+	// Might as well be a separate domain object but weare being consistent with anemic model here
 	private static Rating[] GetSearchableRatings(Rating rating)
 	{
 		var ratingsStack = new Stack<Rating>();
