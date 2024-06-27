@@ -1,5 +1,8 @@
 using System.Data;
+using System.Text.Json.Serialization;
+using FluentValidation;
 using Npgsql;
+using SchedulerApi.Controllers;
 using SchedulerApi.Domain;
 using SchedulerApi.Infrastructure;
 
@@ -7,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+	x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -17,6 +23,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IReadScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IAvalableBookingsService, AvalableBookingsService>();
+builder.Services.AddTransient<IValidator<GetAvailableManagersRequest>, GetAvailableManagersRequestValidator>();
 
 var app = builder.Build();
 

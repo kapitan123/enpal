@@ -4,5 +4,5 @@ public enum Rating
 {
 	Bronze,
 	Silver,
-	Golden
+	Gold
 }

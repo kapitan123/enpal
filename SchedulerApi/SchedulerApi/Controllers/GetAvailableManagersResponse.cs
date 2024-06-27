@@ -16,3 +16,4 @@ public class Slot
 	// AK TODO check formatting
 	public DateTime StartDate { get; set; }
 }
+

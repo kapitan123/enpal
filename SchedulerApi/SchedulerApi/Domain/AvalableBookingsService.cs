@@ -19,16 +19,14 @@ public class AvalableBookingsService(IReadScheduleRepository repo) : IAvalableBo
 
 		ratingsStack.Push(Rating.Bronze);
 		ratingsStack.Push(Rating.Silver);
-		ratingsStack.Push(Rating.Golden);
+		ratingsStack.Push(Rating.Gold);
 
-		// Pop elements until we find the matching rating
 		while (ratingsStack.Count > 0 && ratingsStack.Peek() != rating)
 		{
 			ratingsStack.Pop();
 		}
 
-		// Return the rest of the elements in the stack
-		return ratingsStack.ToArray();
+		return [.. ratingsStack];
 	}
 }
 

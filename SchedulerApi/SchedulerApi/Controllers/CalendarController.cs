@@ -1,21 +1,36 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SchedulerApi.Domain;
 
 namespace SchedulerApi.Controllers;
 [ApiController]
-[Route("[controller]")]
-public class CalendarController(ILogger<CalendarController> logger, IAvalableBookingsService bookingsService) : ControllerBase
+[Route("calendar")]
+public class CalendarController(ILogger<CalendarController> logger, IValidator<GetAvailableManagersRequest> validator, IAvalableBookingsService bookingsService) : ControllerBase
 {
-	[HttpPost("query", Name = "CheckAvailableBookings")]
+	[HttpPost("query", Name = "GetAvailableSlots")]
 	[Produces("application/json")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-	public async Task<IActionResult> Get([FromBody] GetAvailableManagersRequest req)
+	public async Task<IActionResult> GetAvailableSlots([FromBody] GetAvailableManagersRequest req)
 	{
-		// AK TODO add validation
-		// AK TODO add no results handling
-		var result = await bookingsService.GetAvailableSlotsWithManagerCountAsync(req.Language, req.Rating, req.Products, DateOnly.FromDateTime(req.Date));
+		var validationResult = validator.Validate(req);
+
+		if (!validationResult.IsValid)
+		{
+			return BadRequest(validationResult.Errors);
+		}
+
+		_ = Enum.TryParse<Language>(req.Language, out var language);
+		_ = Enum.TryParse<Rating>(req.Language, out var rating);
+		var products = req.Products.Select(str =>
+		{
+			_ = Enum.TryParse<Product>(str, out var product);
+			return product;
+
+		}).ToArray();
+
+		var result = await bookingsService.GetAvailableSlotsWithManagerCountAsync(language, rating, products, DateOnly.FromDateTime(req.Date));
 		// AK TODO convert to request
 		return Ok(result);
 	}
