@@ -1,6 +1,6 @@
 ﻿namespace SchedulerApi.Controllers;
 
-public class CheckAvailableBookingsResponse
+public class GetAvailableManagersResponse
 {
 	// AK TODO make it snake case
 

@@ -1,29 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using SchedulerApi.Domain;
 
 namespace SchedulerApi.Controllers;
 [ApiController]
 [Route("[controller]")]
-public class CalendarController : ControllerBase
+public class CalendarController(ILogger<CalendarController> logger, IAvalableBookingsService bookingsService) : ControllerBase
 {
-	private static readonly string[] Summaries = new[]
-	{
-		"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-	};
-
-	private readonly ILogger<CalendarController> _logger;
-
-	public CalendarController(ILogger<CalendarController> logger)
-	{
-		_logger = logger;
-	}
-
 	[HttpPost("query", Name = "CheckAvailableBookings")]
 	[Produces("application/json")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-	public async Task<IActionResult> Get()
+	public async Task<IActionResult> Get([FromBody] GetAvailableManagersRequest req)
 	{
-		throw new InvalidCastException();
+		// AK TODO add validation
+		// AK TODO add no results handling
+		var result = await bookingsService.GetAvailableSlotsWithManagerCountAsync(req.Language, req.Rating, req.Products, DateOnly.FromDateTime(req.Date));
+		// AK TODO convert to request
+		return Ok(result);
 	}
 }

@@ -1,5 +1,7 @@
 using System.Data;
 using Npgsql;
+using SchedulerApi.Domain;
+using SchedulerApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +11,12 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IReadScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IAvalableBookingsService, AvalableBookingsService>();
 
 var app = builder.Build();
 
