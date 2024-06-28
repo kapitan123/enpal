@@ -1,11 +1,14 @@
 ﻿using Dapper;
 using Npgsql;
+using Polly;
 using SchedulerApi.Domain;
 
 namespace SchedulerApi.Infrastructure
 {
 	public class ScheduleRepository(IConfiguration configuration) : IReadScheduleRepository
 	{
+		// The query parts are not intended to be reusable.
+		// If needed, we can easily extract manager filtering for caching.
 		public async Task<IEnumerable<AvailableBookings>> GetAvailableSlotsWithManagerCount(Language language, Rating[] searchForRatings, Product[] products, DateOnly date)
 		{
 			using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
@@ -52,7 +55,11 @@ GROUP BY(start_date, end_date);
 				DayFinish = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59)
 			};
 
-			var result = await connection.QueryAsync<AvailableSlotWithManagerCount>(query, parameters);
+			var retryPolicy = Policy
+				.Handle<NpgsqlException>(ex => ex.IsTransient) // Handle transient PostgreSQL exceptions. Depending on the DB setup, this might be detrimental.
+				.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
+			var result = await retryPolicy.ExecuteAsync(() => connection.QueryAsync<AvailableSlotWithManagerCount>(query, parameters));
 
 			return result.Select(r => new AvailableBookings(
 				r.StartDate, r.EndDate, r.AvailableManagerCount));
@@ -63,5 +70,4 @@ GROUP BY(start_date, end_date);
 	{
 		Task<IEnumerable<AvailableBookings>> GetAvailableSlotsWithManagerCount(Language language, Rating[] searchForRatings, Product[] products, DateOnly date);
 	}
-
 }
