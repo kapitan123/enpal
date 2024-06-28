@@ -33,8 +33,16 @@ public class CalendarController(ILogger<CalendarController> logger, IValidator<G
 			}).ToArray();
 
 			var result = await bookingsService.GetAvailableSlotsWithManagerCountAsync(language, rating, products, req.Date);
-			// AK TODO convert to request
-			return Ok(result);
+
+			// It should actually be wrapped in a Data object it's a convention
+			var response =
+				result.Select(r => new AvailableSlotResponse
+				{
+					AvailableCount = r.ManagersCount,
+					StartDate = r.StartDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+				});
+
+			return Ok(response);
 		}
 		catch (Exception e)
 		{

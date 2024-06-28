@@ -4,7 +4,7 @@ namespace SchedulerApi.Domain;
 
 public class AvalableBookingsService(IReadScheduleRepository repo) : IAvalableBookingsService
 {
-	public async Task<IEnumerable<AvailableSlotWithManagerCount>> GetAvailableSlotsWithManagerCountAsync(Language language, Rating rating, Product[] products, DateOnly date)
+	public async Task<IEnumerable<AvailableBookings>> GetAvailableSlotsWithManagerCountAsync(Language language, Rating rating, Product[] products, DateOnly date)
 	{
 		var accessableRatings = GetSearchableRatings(rating);
 		var result = await repo.GetAvailableSlotsWithManagerCount(language, accessableRatings, products, date);
@@ -32,5 +32,5 @@ public class AvalableBookingsService(IReadScheduleRepository repo) : IAvalableBo
 
 public interface IAvalableBookingsService
 {
-	public Task<IEnumerable<AvailableSlotWithManagerCount>> GetAvailableSlotsWithManagerCountAsync(Language language, Rating rating, Product[] products, DateOnly date);
+	public Task<IEnumerable<AvailableBookings>> GetAvailableSlotsWithManagerCountAsync(Language language, Rating rating, Product[] products, DateOnly date);
 }
