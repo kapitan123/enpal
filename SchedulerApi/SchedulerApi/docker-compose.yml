@@ -18,7 +18,9 @@ services:
     profiles: [all]
     container_name: scheduler-api
     build:
-        context: .. # AK TODO maybe it should contain two dots for context
+        context: .. 
         dockerfile: SchedulerApi/Dockerfile
     ports:
-      - 3000:3000 # AK TODO change to needed for 
+      - 3000:8080
+    depends_on:
+      - db
